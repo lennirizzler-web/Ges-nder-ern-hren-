@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12171a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Gesünder leben</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#12171a;--s1:#1a2125;--s2:#243036;--tx:#e9eeeb;--mu:#8e9b96;--ac:#a9cba0;--wa:#e8b98b;--ln:rgba(255,255,255,.07);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:inherit;margin:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--tx);font-family:'Manrope',-apple-system,system-ui,sans-serif;line-height:1.5}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:520px;margin:0 auto;padding:22px 18px 130px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--mu);margin-top:2px}
+.tabs{display:flex;gap:4px;background:var(--s1);padding:4px;border-radius:14px;margin:20px 0 6px}
+.tab{flex:1;padding:10px;border-radius:10px;color:var(--mu);font-weight:600;transition:background .25s,color .25s}
+.tab.on{background:var(--s2);color:var(--tx)}
+#app.in{animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:15px;font-weight:600;color:var(--mu);margin:24px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:10px 15px;border-radius:999px;background:var(--s1);border:1px solid var(--ln);transition:background .2s,color .2s,transform .15s}
+.chip:active{transform:scale(.95)}
+.chip.on{background:var(--ac);color:#12171a;font-weight:600;border-color:var(--ac)}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:28px 18px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 40%)}
+#go{display:block;width:100%;max-width:484px;margin:0 auto;height:54px;border-radius:16px;background:var(--ac);color:#12171a;font-weight:800;font-size:16px;transition:opacity .25s,transform .15s}
+#go:active{transform:scale(.98)}
+#go:disabled{opacity:.3}
+.lead{color:var(--mu);margin:18px 0 14px}
+.back{display:flex;align-items:center;gap:4px;margin-top:18px;color:var(--ac);font-weight:600}
+.card{background:var(--s1);border:1px solid var(--ln);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.hd{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;text-align:left}
+.hd b{display:block;font-size:17px}
+.hd small{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--mu);font-size:13px;margin-top:2px}
+.hd small span:first-child{color:var(--wa)}
+.chev{flex:none;color:var(--mu);transition:transform .3s}
+.open .chev{transform:rotate(180deg)}
+.bd{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.open .bd{grid-template-rows:1fr}
+.bd>div{overflow:hidden;padding:0 16px}
+.open .bd>div{padding-bottom:18px}
+h3{font-size:14px;font-weight:600;color:var(--mu);margin:6px 0 8px}
+ul{list-style:none;padding:0;margin-bottom:14px}
+li{padding:5px 0;border-bottom:1px solid var(--ln)}
+ul li.has{color:var(--ac)}
+ul li.has::before{content:"✓ "}
+ol{padding-left:20px}
+ol li{border:0;padding:4px 0 4px 4px}
+ol li::marker{color:var(--wa);font-weight:600}
+.alt{display:block;width:100%;padding:14px;margin-top:6px;border-radius:14px;background:var(--s1);border:1px solid var(--ln);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Gesünder leben</h1>
+  <p class="sub">Gesund kochen mit dem, was du magst.</p>
+  <div class="tabs"><button class="tab on" data-t="pick">Zutaten</button><button class="tab" data-t="ideas">Ideen</button></div>
+  <main id="app"></main>
+</div>
+<div id="bar"><button id="go"></button></div>
+<script>
+const N={av:'Avocado',to:'Tomate',gu:'Gurke',pa:'Paprika',sp:'Spinat',br:'Brokkoli',ka:'Karotte',zu:'Zucchini',pi:'Pilze',zw:'Zwiebel',ba:'Banane',be:'Beeren',re:'Reis',bt:'Vollkornbrot',nu:'Vollkornnudeln',qu:'Quinoa',kf:'Kartoffel',sk:'Süßkartoffel',ha:'Haferflocken',ei:'Ei',hu:'Hähnchen',la:'Lachs',th:'Thunfisch',fe:'Feta',jo:'Joghurt',ki:'Kichererbsen',li:'Linsen',bo:'Bohnen'};
+const G=[['Gemüse & Obst','av to gu pa sp br ka zu pi zw ba be'],['Basis','re bt nu qu kf sk ha'],['Eiweiß','ei hu la th fe jo ki li bo']].map(([t,k])=>[t,k.split(' ')]);
+const R=[
+{n:'Avocado-Ei-Brot',t:10,m:['av','ei','bt'],i:['bt|2 Scheiben Vollkornbrot','av|1 reife Avocado','ei|1 Ei','|Zitrone, Salz, Pfeffer'],s:['Ei 6–7 Minuten hart kochen, abschrecken, pellen.','Brot toasten. Avocado mit Zitronensaft, Salz und Pfeffer zerdrücken und aufstreichen.','Ei in Scheiben schneiden und darauf legen.']},
+{n:'Avocado-Reis-Bowl',t:15,m:['re','av','gu','ei'],i:['re|80 g Reis (roh)','av|½ Avocado','gu|½ Gurke','ei|1 Ei','|Sojasauce, Zitrone'],s:['Reis nach Packungsangabe kochen.','Ei 6 Minuten kochen. Avocado und Gurke in Scheiben schneiden.','Alles auf dem Reis anrichten, mit Sojasauce und Zitrone beträufeln.']},
+{n:'Gemüse-Reispfanne',t:20,m:['re','pa','zw','ei'],i:['re|80 g Reis (roh)','pa|1 Paprika','zw|1 Zwiebel','ei|2 Eier','|Öl, Sojasauce, Pfeffer'],s:['Reis kochen.','Zwiebel und Paprika in Öl 5 Minuten braten.','Reis zugeben, Eier verquirlen und unterrühren, bis sie stocken. Würzen.']},
+{n:'Süßkartoffel mit Kichererbsen',t:35,m:['sk','ki','jo'],i:['sk|1 große Süßkartoffel','ki|½ Dose Kichererbsen','jo|2 EL Joghurt','|Olivenöl, Paprikapulver, Salz'],s:['Süßkartoffel würfeln, mit Kichererbsen, Öl, Paprikapulver und Salz mischen.','Bei 200 °C etwa 25 Minuten backen.','Mit einem Klecks Joghurt servieren.']},
+{n:'Griechischer Salat',t:10,m:['gu','to','fe','zw'],i:['gu|½ Gurke','to|2 Tomaten','fe|50 g Feta','zw|½ rote Zwiebel','|Olivenöl, Zitrone'],s:['Gurke und Tomaten in Stücke schneiden, Zwiebel in dünne Ringe.','Feta darüberbröckeln.','Mit Öl, Zitrone, Salz und Pfeffer anmachen.']},
+{n:'Spinat-Rührei',t:10,m:['sp','ei','to'],i:['sp|1 Handvoll Spinat','ei|2 Eier','to|1 Tomate','|Öl, Salz'],s:['Tomate würfeln und kurz anbraten.','Spinat zugeben, bis er zusammenfällt.','Eier verquirlen, dazugeben und unter Rühren stocken lassen.']},
+{n:'Kichererbsen-Curry',t:25,m:['ki','to','sp','zw','re'],i:['ki|1 Dose Kichererbsen','zw|1 Zwiebel','to|2 Tomaten','sp|1 Handvoll Spinat','re|80 g Reis (roh)','|Currypulver'],s:['Reis kochen.','Zwiebel anbraten, 1 EL Currypulver kurz mitrösten.','Tomaten und Kichererbsen 10 Minuten köcheln, Spinat unterheben. Mit Reis servieren.']},
+{n:'Rote Linsensuppe',t:30,m:['li','ka','zw','kf'],i:['li|100 g rote Linsen','ka|1 Karotte','zw|1 Zwiebel','kf|1 Kartoffel','|600 ml Gemüsebrühe, Zitrone'],s:['Gemüse würfeln und kurz anbraten.','Linsen und Brühe zugeben, 20 Minuten köcheln.','Nach Wunsch pürieren, mit Salz, Pfeffer und Zitrone abschmecken.']},
+{n:'Beeren-Joghurt-Bowl',t:5,m:['jo','be','ba','ha'],i:['jo|200 g Naturjoghurt','be|1 Handvoll Beeren','ba|½ Banane','ha|3 EL Haferflocken'],s:['Joghurt in eine Schüssel geben.','Banane schneiden, mit Beeren und Haferflocken darauf verteilen.']},
+{n:'Haferbrei mit Banane',t:5,m:['ha','ba','be'],i:['ha|50 g Haferflocken','ba|1 Banane','be|ein paar Beeren','|250 ml Milch oder Wasser, Zimt'],s:['Haferflocken mit Milch 4 Minuten köcheln, dabei rühren.','Banane in Scheiben und Beeren darauf geben, Zimt drüber.']},
+{n:'Lachs mit Ofenbrokkoli',t:30,m:['la','br','kf'],i:['la|1 Lachsfilet','br|1 kleiner Brokkoli','kf|2 Kartoffeln','|Olivenöl, Zitrone, Salz'],s:['Kartoffeln würfeln und 10 Minuten bei 200 °C vorbacken.','Brokkoli und Lachs dazugeben, mit Öl, Salz und Zitrone würzen.','Weitere 12–15 Minuten backen.']},
+{n:'Hähnchen-Gemüse-Pfanne',t:25,m:['hu','pa','zu','re'],i:['hu|150 g Hähnchenbrust','pa|1 Paprika','zu|1 Zucchini','re|80 g Reis (roh)','|Öl, Paprikapulver'],s:['Reis kochen.','Hähnchenstreifen 6 Minuten in Öl braten.','Gemüse zugeben, weitere 6 Minuten braten, würzen und mit Reis servieren.']},
+{n:'Thunfisch-Bohnen-Salat',t:10,m:['th','bo','to','zw'],i:['th|1 Dose Thunfisch (im eigenen Saft)','bo|½ Dose weiße Bohnen','to|2 Tomaten','zw|½ rote Zwiebel','|Öl, Zitrone'],s:['Bohnen abspülen, Tomaten würfeln, Zwiebel fein schneiden.','Alles mit dem Thunfisch mischen.','Mit Öl, Zitrone, Salz und Pfeffer anmachen.']},
+{n:'Pilz-Omelett',t:12,m:['pi','ei','zw','sp'],i:['pi|150 g Pilze','ei|3 Eier','zw|½ Zwiebel','sp|1 Handvoll Spinat (optional)','|Öl, Salz'],s:['Pilze und Zwiebel 5 Minuten scharf anbraten, herausnehmen.','Eier verquirlen, in die Pfanne geben und leicht stocken lassen.','Füllung auf eine Hälfte geben und zusammenklappen.']},
+{n:'Quinoa-Bowl',t:20,m:['qu','av','to','ki','gu'],i:['qu|70 g Quinoa','av|½ Avocado','to|1 Tomate','ki|½ Dose Kichererbsen','|Zitrone, Olivenöl'],s:['Quinoa mit doppelter Menge Wasser 12 Minuten kochen.','Tomate und Avocado würfeln.','Alles mit den Kichererbsen mischen, mit Öl, Zitrone und Salz anmachen.']},
+{n:'Vollkornnudeln mit Tomate & Brokkoli',t:20,m:['nu','to','br'],i:['nu|80 g Vollkornnudeln','to|3 Tomaten','br|1 kleiner Brokkoli','|1 Knoblauchzehe, Olivenöl'],s:['Nudeln kochen, den Brokkoli die letzten 3 Minuten mitgaren.','Tomaten mit Knoblauch in Öl 8 Minuten zu einer Sauce einkochen.','Alles vermengen.']},
+{n:'Ofengemüse mit Feta',t:35,m:['ka','zu','pa','fe'],i:['ka|1 Karotte','zu|1 Zucchini','pa|1 Paprika','fe|50 g Feta','|Olivenöl, Salz'],s:['Gemüse in Stücke schneiden, mit Öl und Salz mischen.','Bei 200 °C 25 Minuten backen.','Feta darüberbröckeln und 5 Minuten mitbacken.']}
+];
+const $=s=>document.querySelector(s),app=$('#app'),bar=$('#bar'),go=$('#go');
+const sel=new Set();let tab='pick',res=false,idea=[];
+const chev='<svg class="chev" viewBox="0 0 24 24" width="20" height="20"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const shuf=()=>{idea=[...R].sort(()=>Math.random()-.5).slice(0,4)};
+const count=()=>{go.textContent=sel.size?`Gerichte finden (${sel.size})`:'Zutaten wählen';go.disabled=!sel.size};
+const card=(r,hit)=>`<article class="card"><button class="hd" aria-expanded="false"><span><b>${r.n}</b><small><span>${r.t} Min.</span><span>${hit!=null?`${hit} von ${r.m.length} Zutaten`:r.m.map(k=>N[k]).join(', ')}</span></small></span>${chev}</button><div class="bd"><div><h3>Du brauchst</h3><ul>${r.i.map(x=>{const[k,t]=x.split('|');return`<li${sel.has(k)?' class="has"':''}>${t}</li>`}).join('')}</ul><h3>So geht's</h3><ol>${r.s.map(s=>`<li>${s}</li>`).join('')}</ol></div></div></article>`;
+function render(){
+  app.classList.remove('in');void app.offsetWidth;app.classList.add('in');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  bar.hidden=!(tab==='pick'&&!res);
+  if(tab==='ideas'){app.innerHTML=`<p class="lead">Vier Ideen für heute, ganz ohne Auswahl.</p>${idea.map(r=>card(r)).join('')}<button class="alt" id="shuf">Andere Ideen</button>`;return}
+  if(!res){app.innerHTML=G.map(([t,k])=>`<h2>${t}</h2><div class="chips">${k.map(i=>`<button class="chip${sel.has(i)?' on':''}" data-k="${i}">${N[i]}</button>`).join('')}</div>`).join('');count();return}
+  const l=R.map(r=>({r,hit:r.m.filter(k=>sel.has(k)).length})).filter(x=>x.hit).sort((a,b)=>b.hit/b.r.m.length-a.hit/a.r.m.length||b.hit-a.hit);
+  app.innerHTML=`<button class="back"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Zutaten ändern</button><p class="lead">${[...sel].map(k=>N[k]).join(', ')}</p>`+(l.length?l.map(x=>card(x.r,x.hit)).join(''):'<p class="lead">Dazu gibt es noch kein Gericht. Probier eine andere Zutat.</p>');
+}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.chip,.tab,.hd,.back,#go,#shuf');if(!c)return;
+  if(c.matches('.chip')){const k=c.dataset.k;sel.has(k)?sel.delete(k):sel.add(k);c.classList.toggle('on');count()}
+  else if(c.matches('.hd')){const o=c.parentElement.classList.toggle('open');c.setAttribute('aria-expanded',o)}
+  else if(c.matches('.tab')){tab=c.dataset.t;res=false;if(tab==='ideas'&&!idea.length)shuf();render();scrollTo(0,0)}
+  else if(c.matches('#go')){res=true;render();scrollTo(0,0)}
+  else if(c.matches('.back')){res=false;render()}
+  else if(c.matches('#shuf')){shuf();render();scrollTo(0,0)}
+});
+render();
+</script>
+</body>
+</html>
